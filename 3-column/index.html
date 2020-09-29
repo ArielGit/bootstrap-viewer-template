@@ -5,7 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <title>Map Viewer (3-column layout)</title>
-    <link rel="stylesheet" href="../assets/css/ol.css" />
+    <link rel="stylesheet" href="https://openlayers.org/en/v3.20.1/css/ol.css" type="text/css">
+
+    <!-- <link rel="stylesheet" href="../assets/css/ol.css" /> -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
     <style type="text/css">
@@ -28,7 +30,6 @@
         width: 42px;
         text-align: center;
       }
-
       .mini-submenu-left {
         position: absolute;
         top: 60px;
@@ -41,16 +42,10 @@
         right: .5em;
         z-index: 40;
       }
-
       #map { z-index: 35; }
-
       .sidebar { z-index: 45; }
-
       .main-row { position: relative; top: 0; }
-
-      .mini-submenu:hover{
-        cursor: pointer;
-      }
+      .mini-submenu:hover{cursor: pointer; }
 
       .slide-submenu{
         background: rgba(0, 0, 0, 0.45);
@@ -61,7 +56,9 @@
       }
 
     </style>
-    <script type="text/javascript" src="../assets/js/ol.js"></script>
+    <!-- <script type="text/javascript" src="../assets/js/ol.js"></script> -->
+    <script src="https://openlayers.org/en/v3.20.1/build/ol.js"></script>
+
     <script type="text/javascript" src="//code.jquery.com/jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript">
@@ -139,16 +136,28 @@
 
         $(window).on("resize", applyMargins);
 
+        var layers = [
+          new ol.layer.Tile({
+            source: new ol.source.OSM()
+          }),
+          new ol.layer.Image({
+            /*extent: [-13884991, 2870341, -7455066, 6338219],*/
+            source: new ol.source.ImageWMS({
+              url: 'http://server.gob.ar/geoserver/wms',
+              params: {'LAYERS': 'demarcacion:Barrios_Ord_354_1980'},
+              serverType: 'geoserver'
+            })
+          })
+        ];
+
         var map = new ol.Map({
           target: "map",
-          layers: [
-            new ol.layer.Tile({
-              source: new ol.source.OSM()
-            })
-          ],
+          layers: layers,
           view: new ol.View({
-            center: [0, 0],
-            zoom: 2
+            projection: 'EPSG:4326',
+            /*center: [0,0],*/
+            center: [-65.3,-24.21],
+            zoom: 12
           })
         });
         applyInitialUIState();
